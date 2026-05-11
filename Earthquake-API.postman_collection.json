@@ -1,0 +1,266 @@
+{
+  "info": {
+    "_postman_id": "7656b424-4600-4f31-ab6d-930d64e1aae6",
+    "name": "Earthquake API",
+    "description": "REST API for earthquake data with JWT authentication and Redis cache. Provides CRUD operations for earthquake records with pagination support.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45700405",
+    "_collection_link": "https://go.postman.co/collection/45700405-7656b424-4600-4f31-ab6d-930d64e1aae6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user. Returns JWT token along with username and role."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login with existing credentials. Returns JWT token for accessing protected endpoints."
+          },
+          "response": []
+        }
+      ],
+      "description": "User authentication endpoints for registration and login"
+    },
+    {
+      "name": "Earthquakes",
+      "item": [
+        {
+          "name": "Get All Earthquakes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/earthquakes?page=0&size=20&sort=magnitude,desc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "earthquakes"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0",
+                  "description": "Page number (0-indexed)"
+                },
+                {
+                  "key": "size",
+                  "value": "20",
+                  "description": "Number of items per page (max 20)"
+                },
+                {
+                  "key": "sort",
+                  "value": "magnitude,desc",
+                  "description": "Sort field and direction (e.g., magnitude,desc or time,asc)"
+                }
+              ]
+            },
+            "description": "Get paginated list of earthquakes. Public endpoint - no authentication required. Supports sorting by magnitude, time, depth, etc."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Earthquake by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/earthquakes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "earthquakes",
+                "1"
+              ]
+            },
+            "description": "Get a single earthquake by ID. Public endpoint - no authentication required."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Earthquake",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"magnitude\": 6.5,\n  \"location\": \"Bakı, Azərbaycan\",\n  \"latitude\": 40.4093,\n  \"longitude\": 49.8671,\n  \"depth\": 15.0,\n  \"time\": \"2024-05-08T12:00:00\",\n  \"tsunamiAlert\": \"No\",\n  \"type\": \"earthquake\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/earthquakes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "earthquakes"
+              ]
+            },
+            "description": "Create a new earthquake record. Requires ADMIN role. Token must be provided in Authorization header."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Earthquake",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"magnitude\": 7.0,\n  \"tsunamiAlert\": \"Yes\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/earthquakes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "earthquakes",
+                "1"
+              ]
+            },
+            "description": "Update an existing earthquake record. Requires ADMIN role. Partial updates supported - only send fields you want to change."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Earthquake",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/earthquakes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "earthquakes",
+                "1"
+              ]
+            },
+            "description": "Delete an earthquake record by ID. Requires ADMIN role."
+          },
+          "response": []
+        }
+      ],
+      "description": "CRUD operations for earthquake data"
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
