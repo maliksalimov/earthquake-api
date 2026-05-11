@@ -3,10 +3,8 @@ spring:
     name: earthquake-api
 
   datasource:
-    url: jdbc:h2:file:./data/earthquakedb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:${DATABASE_URL:h2:file:./data/earthquakedb}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
