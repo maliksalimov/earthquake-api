@@ -27,6 +27,14 @@ public class DataLoader implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+
+        String profile = System.getenv("SPRING_PROFILES_ACTIVE");
+        if ("prod".equals(profile)) {
+            log.info("Production mode - skipping CSV load");
+            return;
+        }
+
+
         long count = earthquakeRepository.count();
         if (count > 0) {
             log.info("There is already {} earthquakes in database", count);
