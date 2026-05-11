@@ -2,6 +2,7 @@ package com.malik.earthquakeapi.controller;
 
 import com.malik.earthquakeapi.dto.CreateEarthquakeRequest;
 import com.malik.earthquakeapi.dto.EarthquakeResponse;
+import com.malik.earthquakeapi.dto.RestPage;
 import com.malik.earthquakeapi.dto.UpdateEarthquakeRequest;
 import com.malik.earthquakeapi.service.EarthquakeService;
 import jakarta.validation.Valid;
@@ -20,12 +21,12 @@ public class EarthquakeController {
     private final EarthquakeService earthquakeService;
 
     @GetMapping
-    public ResponseEntity<Page<EarthquakeResponse>> getAll(
+    public ResponseEntity<RestPage<EarthquakeResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "id,desc") String sort
     ) {
-        Page<EarthquakeResponse> earthquakes = earthquakeService.getAllEarthquakes(page, size, sort);
+        RestPage<EarthquakeResponse> earthquakes = earthquakeService.getAllEarthquakes(page, size, sort);
         return ResponseEntity.ok(earthquakes);
     }
 

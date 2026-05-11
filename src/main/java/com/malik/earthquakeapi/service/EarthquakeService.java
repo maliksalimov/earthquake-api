@@ -2,6 +2,7 @@ package com.malik.earthquakeapi.service;
 
 import com.malik.earthquakeapi.dto.CreateEarthquakeRequest;
 import com.malik.earthquakeapi.dto.EarthquakeResponse;
+import com.malik.earthquakeapi.dto.RestPage;
 import com.malik.earthquakeapi.dto.UpdateEarthquakeRequest;
 import com.malik.earthquakeapi.entity.Earthquake;
 import com.malik.earthquakeapi.exception.ResourceNotFoundException;
@@ -26,8 +27,8 @@ public class EarthquakeService {
     private static final int MAX_PAGE_SIZE = 20;
 
 
-    @Cacheable(value = "earthquakes", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
-    public Page<EarthquakeResponse> getAllEarthquakes(int page, int size, String sort) {
+    @Cacheable(value = "earthquakes", key = "#page + '-' + #size + '-' + #sort")
+    public RestPage<EarthquakeResponse> getAllEarthquakes(int page, int size, String sort) {
 
         if(size > MAX_PAGE_SIZE){
             size = MAX_PAGE_SIZE;
@@ -42,7 +43,7 @@ public class EarthquakeService {
 
         Page<Earthquake> earthquakes = earthquakeRepository.findAll(pageable);
 
-        return earthquakes.map(this::mapToResponse);
+        return new RestPage<>(earthquakes.map(this::mapToResponse));
     }
 
     @Cacheable(value = "earthquake", key = "#id")
