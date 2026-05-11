@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.core.env.Environment;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
@@ -23,14 +25,16 @@ import java.time.format.DateTimeFormatter;
 public class DataLoader implements CommandLineRunner {
 
     private final EarthquakeRepository earthquakeRepository;
+    private final Environment environment;
 
     @Override
     @Transactional
     public void run(String... args) throws Exception {
 
-        String profile = System.getenv("SPRING_PROFILES_ACTIVE");
-        if ("prod".equals(profile)) {
-            log.info("Production mode - skipping CSV load");
+        boolean isProd = Arrays.asList(environment.getActiveProfiles()).contains("prod");
+
+        if (isProd) {
+            log.info("Production environment - skipping CSV data load");
             return;
         }
 
