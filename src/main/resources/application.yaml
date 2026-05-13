@@ -24,11 +24,11 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   cache:
-    type: redis
+    type: ${CACHE_TYPE:none}
 
 jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
@@ -52,6 +52,9 @@ management:
   endpoint:
     health:
       show-details: never
+  health:
+    redis:
+      enabled: ${REDIS_HEALTH_ENABLED:false}
 
 logging:
   level:

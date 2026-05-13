@@ -1,6 +1,6 @@
 # 🌍 Earthquake API
 
-A RESTful API for querying and managing real earthquake data with JWT authentication, Redis caching, and full Swagger documentation.
+A RESTful API for querying and managing real earthquake data with JWT bearer-token authentication, Redis caching, and full Swagger documentation.
 
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.1-6DB33F?style=flat&logo=springboot&logoColor=white)
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?style=flat&logo=openjdk&logoColor=white)
@@ -231,6 +231,12 @@ All endpoints are documented with request/response schemas. Protected endpoints 
 Full collection with pre-configured requests and environment variables:
 
 https://documenter.getpostman.com/view/45700405/2sBXqNkdGs
+
+### Cloud Deployment
+
+Public API URL:
+
+https://earthquake-api-75966859059.us-central1.run.app
 
 ### H2 Console
 
